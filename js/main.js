@@ -6,15 +6,21 @@ var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '', {
 });
 
 function onPreload() {
-	game.load.image('ship', 'assets/rocketship.png', 40, 60);
+	console.log("loading...")
+	game.load.image('ship', 'assets/img/rocketship.png', 40, 60);
+	game.load.image('laser', 'assets/img/laser.png')
 }
 
+console.log("hello");
 var ship;
 var cursors;
+var lasers;
+var laser;
+var spacebar;
 
 function goFullScreen(){
 	// setting a background color
-	game.stage.backgroundColor = "#a6a6a6";
+	// game.stage.backgroundColor = "#a6a6a6";
 	game.scale.pageAlignHorizontally = true;
 	game.scale.pageAlignVertically = true;
 	// using RESIZE scale mode
@@ -23,10 +29,15 @@ function goFullScreen(){
 }
 
 function onCreate() {
+	console.log('creating...')
 	ship = game.add.sprite(0,0,'ship');
+	lasers = game.add.group();
+	lasers.enableBody = true;
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 	game.physics.arcade.enable(ship);
+	lasers.physicsBodyType = Phaser.Physics.ARCADE;
 	cursors = game.input.keyboard.createCursorKeys();
+	spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	goFullScreen();
 	onResize();
 }
@@ -46,4 +57,13 @@ function onUpdate() {
 	else if (cursors.right.isDown) {
 		ship.body.velocity.x = 150;
 	}
+	
+	if (spacebar.isDown) {
+		shoot();
+	}
+}
+
+function shoot() {
+	laser = lasers.create(ship.body.x, ship.body.y, 'laser');
+	laser.body.velocity.y = -300;
 }
