@@ -16,6 +16,7 @@ var ship;
 var cursors;
 var lasers;
 var laser;
+var fireTime;
 var spacebar;
 
 function goFullScreen(){
@@ -36,8 +37,10 @@ function onCreate() {
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 	game.physics.arcade.enable(ship);
 	lasers.physicsBodyType = Phaser.Physics.ARCADE;
+	fireTime = 0;
 	cursors = game.input.keyboard.createCursorKeys();
 	spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	spacebar.onDown.add(function(){shoot()}, this);
 	goFullScreen();
 	onResize();
 }
@@ -57,13 +60,15 @@ function onUpdate() {
 	else if (cursors.right.isDown) {
 		ship.body.velocity.x = 150;
 	}
-	
 	if (spacebar.isDown) {
 		shoot();
 	}
 }
 
 function shoot() {
-	laser = lasers.create(ship.body.x, ship.body.y, 'laser');
-	laser.body.velocity.y = -300;
+	if (game.time.now - fireTime > 500) {
+		laser = lasers.create(ship.body.x, ship.body.y, 'laser');
+		laser.body.velocity.y = -300;
+		fireTime = game.time.now;
+	}
 }
