@@ -67,7 +67,7 @@ function onUpdate() {
 
 function shoot() {
 	if (game.time.now - fireTime > 500) {
-		laser = lasers.create(ship.body.x, ship.body.y, 'laser');
+		laser = lasers.create(ship.body.x + (ship.body.width/3), ship.body.y - (ship.body.height/2), 'laser');
 		laser.body.velocity.y = -300;
 		fireTime = game.time.now;
 	}
