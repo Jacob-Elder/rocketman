@@ -5,44 +5,35 @@ var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '', {
 	update : onUpdate
 });
 
+/**************************** Load All Assets **********************************/
+
 function onPreload() {
-	console.log("loading...")
 	game.load.image('ship', 'assets/img/rocketship.png', 40, 60);
 	game.load.image('laser', 'assets/img/laser.png')
 }
 
-console.log("hello");
+/**************************** Declare Variables ********************************/
+// the players ship
 var ship;
+// arrow keys
 var cursors;
+// lasers group
 var lasers;
+// individual laser
 var laser;
-var fireTime;
+// last time you shot a laser
+var fireTime = 0;
+// the spacebar key
 var spacebar;
 
+/******************** Set Screen Size and Resize Accordingly *****************/
+
 function goFullScreen(){
-	// setting a background color
-	// game.stage.backgroundColor = "#a6a6a6";
 	game.scale.pageAlignHorizontally = true;
 	game.scale.pageAlignVertically = true;
 	// using RESIZE scale mode
 	game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
 	game.scale.setGameSize(true);
-}
-
-function onCreate() {
-	console.log('creating...')
-	ship = game.add.sprite(0,0,'ship');
-	lasers = game.add.group();
-	lasers.enableBody = true;
-	game.physics.startSystem(Phaser.Physics.ARCADE);
-	game.physics.arcade.enable(ship);
-	lasers.physicsBodyType = Phaser.Physics.ARCADE;
-	fireTime = 0;
-	cursors = game.input.keyboard.createCursorKeys();
-	spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-	spacebar.onDown.add(function(){shoot()}, this);
-	goFullScreen();
-	onResize();
 }
 
 function onResize(){
@@ -52,20 +43,47 @@ function onResize(){
     ship.y = Math.round((game.height-ship.width));	
 }
 
+/*********************** Create and Position Game Objects *************************/
+
+function onCreate() {
+	// Select the Arcade style physics engine
+	game.physics.startSystem(Phaser.Physics.ARCADE);
+	// Create Ship and assign physics
+	ship = game.add.sprite(0,0,'ship');
+	game.physics.arcade.enable(ship);
+	//create laser group and assign physics
+	lasers = game.add.group();
+	lasers.enableBody = true;
+	lasers.physicsBodyType = Phaser.Physics.ARCADE;
+	cursors = game.input.keyboard.createCursorKeys();
+	spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	spacebar.onDown.add(function(){shoot()}, this);
+	goFullScreen();
+	onResize();
+}
+
+/************************************ Game Loop *************************************/
+
 function onUpdate() {
+	//stop the ships movement when the key is no longer pressed
 	ship.body.velocity.x = 0;
+	//left and right controls for the ship
 	if (cursors.left.isDown) {
 		ship.body.velocity.x = -150;
 	}
 	else if (cursors.right.isDown) {
 		ship.body.velocity.x = 150;
 	}
+	// call the shoot function when the spacebar is pressed
 	if (spacebar.isDown) {
 		shoot();
 	}
 }
 
+/******************************* Callback Functions *******************************/
+
 function shoot() {
+	// shoot a laser if it has been more than 500 ms since your last shot
 	if (game.time.now - fireTime > 500) {
 		laser = lasers.create(ship.body.x + (ship.body.width/3), ship.body.y - (ship.body.height/2), 'laser');
 		laser.body.velocity.y = -300;
