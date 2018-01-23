@@ -9,7 +9,8 @@ var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '', {
 
 function onPreload() {
 	game.load.image('ship', 'assets/img/rocketship.png', 40, 60);
-	game.load.image('laser', 'assets/img/laser.png')
+	game.load.image('laser', 'assets/img/laser.png');
+	game.load.image('spacefield', 'assets/img/space.jpeg');
 }
 
 /**************************** Declare Variables ********************************/
@@ -25,6 +26,8 @@ var laser;
 var fireTime = 0;
 // the spacebar key
 var spacebar;
+// space background
+var spacefield;
 
 /******************** Set Screen Size and Resize Accordingly *****************/
 
@@ -46,6 +49,7 @@ function onResize(){
 /*********************** Create and Position Game Objects *************************/
 
 function onCreate() {
+	spacefield = game.add.tileSprite(0, 0, 800, 800, 'spacefield');
 	// Select the Arcade style physics engine
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 	// Create Ship and assign physics
@@ -55,9 +59,11 @@ function onCreate() {
 	lasers = game.add.group();
 	lasers.enableBody = true;
 	lasers.physicsBodyType = Phaser.Physics.ARCADE;
+	// create input controls and assign event handlers
 	cursors = game.input.keyboard.createCursorKeys();
 	spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	spacebar.onDown.add(function(){shoot()}, this);
+	// Call funtions for scale and resizing
 	goFullScreen();
 	onResize();
 }
@@ -65,6 +71,8 @@ function onCreate() {
 /************************************ Game Loop *************************************/
 
 function onUpdate() {
+	// make the background scroll
+	spacefield.tilePosition.y += 2;
 	//stop the ships movement when the key is no longer pressed
 	ship.body.velocity.x = 0;
 	//left and right controls for the ship
