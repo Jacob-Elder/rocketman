@@ -8,7 +8,7 @@ var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '', {
 /**************************** Load All Assets **********************************/
 
 function onPreload() {
-	game.load.image('ship', 'assets/img/rocketship.png', 40, 60);
+	game.load.image('ship', 'assets/img/rocketship.png', 20, 80);
 	game.load.image('laser', 'assets/img/laser.png');
 	game.load.image('spacefield', 'assets/img/space.jpeg');
 }
@@ -40,15 +40,19 @@ function goFullScreen(){
 }
 
 function onResize(){
+	console.log(game.width);
+	ship.width = game.width/10;
+	ship.height = ship.width * 1.5;
 	// this function is called each time the browser is resized, and re-positions
 	// game elements to keep them in their right position according to game size
 	ship.x = Math.round((game.width-ship.width)/2);
-    ship.y = Math.round((game.height-ship.width));	
+    ship.y = Math.round((game.height-ship.height));	
 }
 
 /*********************** Create and Position Game Objects *************************/
 
 function onCreate() {
+	// create the background image
 	spacefield = game.add.tileSprite(0, 0, 800, 800, 'spacefield');
 	// Select the Arcade style physics engine
 	game.physics.startSystem(Phaser.Physics.ARCADE);
